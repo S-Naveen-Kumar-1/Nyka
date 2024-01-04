@@ -21,9 +21,12 @@ productRouter.get("/products", async (req, res) => {
         if (req.query.search) {
             searchQuery = { name: { $regex: new RegExp(req.query.search, 'i') } };
         }
-
+        const page = parseInt(req.query.page) || 1
+        const skip = (page - 1) * limit;
         const products = await ProductModel.find({ ...query, ...searchQuery })
             .sort(sortQuery)
+            .skip(skip)
+            .limit(limit);
         res.status(200).send(products)
     }
     catch (err) {
