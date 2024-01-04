@@ -22,11 +22,11 @@ productRouter.get("/products", async (req, res) => {
             searchQuery = { name: { $regex: new RegExp(req.query.search, 'i') } };
         }
         const page = parseInt(req.query.page) || 1
-        const skip = (page - 1) * limit;
+        const skip = (page - 1) * 10;
         const products = await ProductModel.find({ ...query, ...searchQuery })
             .sort(sortQuery)
             .skip(skip)
-            .limit(limit);
+            .limit(10);
         res.status(200).send(products)
     }
     catch (err) {
