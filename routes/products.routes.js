@@ -6,7 +6,25 @@ const productRouter = express.Router()
 
 productRouter.get("/products", async (req, res) => {
     try {
-        const products = await ProductModel.find()
+        let query = {};
+        if (req.query.gender) {
+            query.gender = req.query.gender;
+        }
+        if (req.query.category) {
+            query.category = req.query.category;
+        }
+        let sortQuery = {};
+        if (req.query.sort) {
+            sortQuery[req.query.sort] = req.query.sortOrder === 'asc' ? 1 : -1;
+        }
+        let searchQuery = {};
+        if (req.query.search) {
+            searchQuery = { name: { $regex: new RegExp(req.query.search, 'i') } };
+        }
+
+        const products = await ProductModel.find({ ...query, ...searchQuery })
+            .sort(sortQuery)
+            .limit(10);
         res.status(200).send(products)
     }
     catch (err) {
@@ -54,7 +72,6 @@ productRouter.delete("/products/:id", async (req, res) => {
     }
     catch (err) {
         res.status(400).send(err.message)
-
     }
 })
 module.exports = { productRouter }
