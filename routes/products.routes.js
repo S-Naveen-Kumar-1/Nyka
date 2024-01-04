@@ -24,7 +24,6 @@ productRouter.get("/products", async (req, res) => {
 
         const products = await ProductModel.find({ ...query, ...searchQuery })
             .sort(sortQuery)
-            .limit(10);
         res.status(200).send(products)
     }
     catch (err) {
