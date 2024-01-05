@@ -76,7 +76,15 @@ productRouter.delete("/products/:id", async (req, res) => {
         res.status(400).send(err.message)
     }
 })
-
+productRouter.get("/pagi", async (req, res) => {
+    try {
+        const products = await ProductModel.find()
+        res.send(products)
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
 productRouter.get("/gender", async (req, res) => {
     try {
         const genderData = await ProductModel.aggregate([
