@@ -26,7 +26,7 @@ productRouter.get("/products", async (req, res) => {
         const products = await ProductModel.find({ ...query, ...searchQuery })
             .sort(sortQuery)
             .skip(skip)
-            .limit(10);
+            .limit(10)
         res.status(200).send(products)
     }
     catch (err) {
@@ -76,4 +76,37 @@ productRouter.delete("/products/:id", async (req, res) => {
         res.status(400).send(err.message)
     }
 })
+
+productRouter.get("/gender", async (req, res) => {
+    try {
+        const genderData = await ProductModel.aggregate([
+            {
+                $group: {
+                    _id: "$gender",
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+        res.status(200).send(genderData);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+productRouter.get("/category", async (req, res) => {
+    try {
+        const categoryData = await ProductModel.aggregate([
+            {
+                $group: {
+                    _id: "$category",
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+        res.status(200).send(categoryData);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 module.exports = { productRouter }
